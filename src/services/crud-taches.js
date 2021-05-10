@@ -26,6 +26,7 @@ export async function creer(uid, tache) {
 export async function lireTout(uid) {
   const taches = [];
   return instanceFirestore.collection(collUtil).doc(uid).collection(collTaches)
+                .orderBy('date','desc')
                 .get().then(
                   reponse => reponse.forEach(
                     doc => {
@@ -35,4 +36,12 @@ export async function lireTout(uid) {
                 ).then(
                   () => taches
                 );
+}
+
+export async function supprimer(uid, idTache) {
+  return instanceFirestore.collection(collUtil).doc(uid).collection(collTaches).doc(idTache).delete();
+}
+
+export async function basculer(uid, idTache, tacheCompletee) {
+  return instanceFirestore.collection(collUtil).doc(uid).collection(collTaches).doc(idTache).update('completee', tacheCompletee);
 }

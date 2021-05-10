@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 export default function Taches({etatTaches, utilisateur}) {
   const uid = utilisateur.uid;
   const [taches, setTaches] = etatTaches;
+  
 
   /**
    * On cherche les tâches une seule fois après l'affichage du composant
@@ -16,7 +17,21 @@ export default function Taches({etatTaches, utilisateur}) {
    )
  , [setTaches, uid]);
   
+ function supprimerTache(idTache) {
+  crudTaches.supprimer(uid, idTache).then(
+    () => {
+      setTaches(taches.filter(t => t.id !== idTache))
+    }
+  )
+}
 
+function basculerTache(idTache, tacheCompletee) {
+  crudTaches.basculer(uid, idTache, tacheCompletee).then(
+    () => {
+      setTaches(taches.map())
+    }
+  )
+}
   /**
    * Gérer le formulaire d'ajout de nouvelle tâche en appelant la méthode 
    * d'intégration Firestore appropriée, puis actualiser les tâches en faisant 
@@ -49,9 +64,10 @@ export default function Taches({etatTaches, utilisateur}) {
       </form>
       <div className="listeTaches">
         {
-          taches.map(tache => <Tache key={tache.id} {... tache} />)
+          taches.map(tache => <Tache key={tache.id} {... tache}  basculerTache = {basculerTache} supprimerTache = {supprimerTache} uid = {uid} />)
         }
       </div>
     </section>
   );
 }
+
